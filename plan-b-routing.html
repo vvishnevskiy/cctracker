@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Plan B — Card Routing</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0D1B2E;
+    --navy-mid: #1A2F4A;
+    --gold: #C08A2A;
+    --gold-bg: #FEF3DC;
+    --gold-border: #F0D090;
+    --green: #1E6B4A;
+    --green-bg: #EAF5EE;
+    --green-border: #9ECFB2;
+    --red: #A83030;
+    --red-bg: #FDF0EE;
+    --red-border: #E8A8A0;
+    --ink: #1A1F2E;
+    --ink-mid: #4A5568;
+    --ink-soft: #8A9BB0;
+    --rule: #E8ECF2;
+    --paper: #F5F7FA;
+    --card: #FFFFFF;
+    --shadow: 0 1px 3px rgba(13,27,46,.08), 0 4px 16px rgba(13,27,46,.06);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 0 0 40px;
+  }
+
+  /* Header */
+  .header {
+    background: var(--navy);
+    padding: 20px 18px 18px;
+  }
+  .header-eyebrow {
+    font-size: 10px;
+    letter-spacing: .16em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.5);
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  .header-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1.1;
+    letter-spacing: -.02em;
+  }
+  .header-sub {
+    font-size: 12.5px;
+    color: rgba(255,255,255,.55);
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(192,138,42,.25);
+    border: 1px solid rgba(192,138,42,.4);
+    color: #F5C96A;
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 20px;
+    margin-top: 12px;
+  }
+  .status-dot {
+    width: 6px; height: 6px;
+    background: #F5C96A;
+    border-radius: 50%;
+  }
+
+  /* Section */
+  .section {
+    padding: 14px 14px 4px;
+  }
+  .section-label {
+    font-size: 10px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--ink-soft);
+    margin-bottom: 8px;
+    padding-left: 2px;
+  }
+
+  /* Routing card */
+  .card {
+    background: var(--card);
+    border-radius: 12px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .route-row {
+    display: flex;
+    align-items: center;
+    padding: 11px 14px;
+    gap: 12px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .route-row:last-child { border-bottom: none; }
+  .route-icon {
+    font-size: 17px;
+    flex: 0 0 26px;
+    text-align: center;
+  }
+  .route-body { flex: 1; min-width: 0; }
+  .route-cat {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+  .route-why {
+    font-size: 11px;
+    color: var(--ink-mid);
+    margin-top: 1px;
+    line-height: 1.4;
+  }
+  .route-card {
+    flex: 0 0 auto;
+    text-align: right;
+  }
+  .card-pill {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+  }
+  .pill-green { background: var(--green-bg); color: var(--green); border: 1px solid var(--green-border); }
+  .pill-blue { background: #EEF3FF; color: #2B4DB0; border: 1px solid #B8C8F0; }
+  .pill-slate { background: #EEF1F5; color: #4A5568; border: 1px solid #CBD2DC; }
+  .pill-purple { background: #F4EEFF; color: #5B2D9E; border: 1px solid #C8AAEE; }
+  .pill-amber { background: #FFF3E0; color: #8B4513; border: 1px solid #DEB887; }
+  .pill-teal { background: #E0F4F4; color: #1A7070; border: 1px solid #7ECACA; }
+  .pill-warn { background: #FEF3DC; color: #8A6010; border: 1px solid #E8C860; }
+  .route-row-warn { background: #FFFBF0; }
+  .rate {
+    font-size: 10px;
+    color: var(--ink-soft);
+    margin-top: 2px;
+    font-weight: 500;
+  }
+
+  /* Gap card */
+  .gap-card {
+    background: var(--red-bg);
+    border: 1px solid var(--red-border);
+    border-radius: 12px;
+    padding: 13px 14px;
+    margin-bottom: 8px;
+  }
+  .gap-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .gap-icon { font-size: 16px; }
+  .gap-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--red);
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  .gap-item {
+    display: flex;
+    gap: 9px;
+    padding: 7px 0;
+    border-bottom: 1px solid rgba(168,48,48,.12);
+  }
+  .gap-item:last-child { border-bottom: none; padding-bottom: 0; }
+  .gap-bullet {
+    width: 18px; height: 18px;
+    background: var(--red);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex: 0 0 18px;
+    margin-top: 1px;
+    font-size: 9px;
+    color: #fff;
+    font-weight: 800;
+  }
+  .gap-text { flex: 1; }
+  .gap-name {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--red);
+    line-height: 1.2;
+  }
+  .gap-desc {
+    font-size: 11px;
+    color: #8B4040;
+    margin-top: 2px;
+    line-height: 1.4;
+  }
+
+  /* Decision card */
+  .decision-card {
+    background: var(--gold-bg);
+    border: 1px solid var(--gold-border);
+    border-radius: 12px;
+    padding: 13px 14px;
+    margin-bottom: 8px;
+  }
+  .decision-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .decision-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  .decision-option {
+    padding: 8px 10px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    border: 1px solid transparent;
+  }
+  .decision-option:last-child { margin-bottom: 0; }
+  .opt-keep { background: #FFF9EC; border-color: #E8C860; }
+  .opt-drop { background: #ECFAF3; border-color: #9ECFB2; }
+  .opt-label {
+    font-size: 11.5px;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  .opt-keep .opt-label { color: #8A6010; }
+  .opt-drop .opt-label { color: var(--green); }
+  .opt-desc {
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--ink-mid);
+  }
+  .lean-row {
+    margin-top: 10px;
+    padding: 8px 10px;
+    background: rgba(192,138,42,.12);
+    border-radius: 7px;
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #7A5818;
+    line-height: 1.4;
+  }
+
+  /* Divider */
+  .divider {
+    height: 1px;
+    background: var(--rule);
+    margin: 4px 0 10px;
+  }
+
+  /* Footer */
+  .footer {
+    padding: 8px 16px 0;
+    font-size: 10.5px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-eyebrow">Card Strategy · Operating Mode</div>
+  <div class="header-title">Plan B<br>Without Venture X</div>
+  <div class="header-sub">Use this until Venture X is open.<br>Switch to Plan A once Priority Pass is active.</div>
+  <div class="status-badge"><span class="status-dot"></span>Active now</div>
+</div>
+
+<!-- Travel -->
+<div class="section">
+  <div class="section-label">Travel</div>
+  <div class="card">
+    <div class="route-row">
+      <div class="route-icon">✈️</div>
+      <div class="route-body">
+        <div class="route-cat">United flights</div>
+        <div class="route-why">Free bags for both of you</div>
+      </div>
+      <div class="route-card">
+        <div class="card-pill pill-blue">Quest / Explorer</div>
+        <div class="rate">3x United</div>
+      </div>
+    </div>
+    <div class="route-row">
+      <div class="route-icon">🌍</div>
+      <div class="route-body">
+        <div class="route-cat">Non-United flights</div>
+        <div class="route-why">Trip cancel + evacuation coverage. Book flight + hotel together for full $10k/$20k protection.</div>
+      </div>
+      <div class="route-card">
+        <div class="card-pill pill-green">CSP</div>
+        <div class="rate">2x + insurance</div>
+      </div>
+    </div>
+    <div class="route-row">
+      <div class="route-icon">🏠</div>
+      <div class="route-body">
+        <div class="route-cat">Airbnb · Full trips</div>
+        <div class="route-why">$10k/$20k trip cancel + evacuation</div>
+      </div>
+      <div class="route-card">
+        <div class="card-pill pill-green">CSP</div>
+        <div class="rate">3x vacation rentals</div>
+      </div>
+    </div>
+    <div class="route-row">
+      <div class="route-icon">🚗</div>
+      <div class="route-body">
+        <div class="route-cat">Rental cars</div>
+        <div class="route-why">Primary CDW $60k — fine for normal cars</div>
+      </div>
+      <div class="route-card">
+        <div class="card-pill pill-green">CSP</div>
+        <div class="rate">Primary CDW</div>
+      </div>
+    </div>
+    <div class="route-row">
+      <div class="route-icon">🏨</div>
+      <div class="route-body">
+        <div class="route-cat">Chase Travel hotel</div>
+        <div class="route-why">$100 annual credit — use once/year</div>
+      </div>
+      <div class="route-card">
+        <div class="card-pill pill-green">CSP</div>
+        <div class="rate">$100 credit</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Hotels -->
+<div class="section">
+  <div class="section-label">Hotel stays</div>
+  <div class="card">
+    <div class="route-row">
+      <div class="route-icon">🏨</div>
+      <div class="route-body">
+        <div class="route-cat">Marriott properties</div>
+        <div class="route-why">Highest earn at Marriott Bonvoy hotels</div>
+      </div>
+      <div class="route-card">
+        <div class="card-pill pill-amber">Marriott Boundless</div>
+        <div class="rate">6x Bonvoy pts</div>
+      </div>
+    </div>
+    <div class="route-row">
+      <div class="route-icon">🏨</div>
+      <div class="route-body">
+        <div class="route-cat">IHG properties</div>
+        <div class="route-why">Holiday Inn, Crowne Plaza, Kimpton, etc.</div>
+      </div>
+      <div class="route-card">
+        <div class="card-pill pill-teal">IHG Premier</div>
+        <div class="rate">10x+ IHG pts</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Everyday -->
+<div class="section">
+  <div class="section-label">Everyday spending</div>
+  <div class="card">
+    <div class="route-row">
+      <div class="route-icon">🍽️</div>
+      <div class="route-body">
+        <div class="route-cat">Dining</div>
+        <div class="route-why">Unless Freedom/Discover runs 5% dining</div>
+      </div>
+      <div class="route-card">
+        <div class="card-pill pill-green">CSP</div>
+        <div class="rate">3x points</div>
+      </div>
+    </div>
+    <div class="route-row">
+      <div class="route-icon">📺</div>
+      <div class="route-body">
+        <div class="route-cat">Streaming</div>
+        <div class="route-why">Netflix, Spotify, Disney+, etc.</div>
+      </div>
+      <div class="route-card">
+        <div class="card-pill pill-green">CSP</div>
+        <div class="rate">3x points</div>
+      </div>
+    </div>
+    <div class="route-row">
+      <div class="route-icon">🛒</div>
+      <div class="route-body">
+        <div class="route-cat">Online grocery</div>
+        <div class="route-why">FreshDirect, Instacart, etc. (not Costco)</div>
+      </div>
+      <div class="route-card">
+        <div class="card-pill pill-green">CSP</div>
+        <div class="rate">3x points</div>
+      </div>
+    </div>
+    <div class="route-row">
+      <div class="route-icon">🚕</div>
+      <div class="route-body">
+        <div class="route-cat">Lyft</div>
+        <div class="route-why">5x through Sept 30, 2027</div>
+      </div>
+      <div class="route-card">
+        <div class="card-pill pill-green">CSP</div>
+        <div class="rate">5x points</div>
+      </div>
+    </div>
+    <div class="route-row">
+      <div class="route-icon">🚗</div>
+      <div class="route-body">
+        <div class="route-cat">Uber</div>
+        <div class="route-why">Codes as travel</div>
+      </div>
+      <div class="route-card">
+        <div class="card-pill pill-green">CSP</div>
+        <div class="rate">2x points</div>
+      </div>
+    </div>
+    <div class="route-row">
+      <div class="route-icon">🛒</div>
+      <div class="route-body">
+        <div class="route-cat">Instacart</div>
+        <div class="route-why">~$15/mo credit — use this card exclusively</div>
+      </div>
+      <div class="route-card">
+        <div class="card-pill pill-blue">Quest</div>
+        <div class="rate">~$180/yr credit</div>
+      </div>
+    </div>
+    <div class="route-row">
+      <div class="route-icon">🛍️</div>
+      <div class="route-body">
+        <div class="route-cat">Amazon</div>
+        <div class="route-why">Always</div>
+      </div>
+      <div class="route-card">
+        <div class="card-pill pill-purple">Amazon Visa</div>
+        <div class="rate">5% back</div>
+      </div>
+    </div>
+    <div class="route-row">
+      <div class="route-icon">⛽</div>
+      <div class="route-body">
+        <div class="route-cat">Gas · EV charging (non-Costco)</div>
+        <div class="route-why">Shell, BP, Wawa, etc. Costco gas is in the Costco section.</div>
+      </div>
+      <div class="route-card">
+        <div class="card-pill pill-slate">Citi Costco</div>
+        <div class="rate">4% back</div>
+      </div>
+    </div>
+    <div class="route-row">
+      <div class="route-icon">🥦</div>
+      <div class="route-body">
+        <div class="route-cat">ShopRite · Supermarket</div>
+        <div class="route-why">Off-quarter only (non-5% periods)</div>
+      </div>
+      <div class="route-card">
+        <div class="card-pill pill-slate">Amex BCE</div>
+        <div class="rate">3% back</div>
+      </div>
+    </div>
+    <div class="route-row route-row-warn">
+      <div class="route-icon">🖥️</div>
+      <div class="route-body">
+        <div class="route-cat">Big purchases ⚠️</div>
+        <div class="route-why">Electronics, appliances — only $500/item protection. Delay big buys until Venture X if possible.</div>
+      </div>
+      <div class="route-card">
+        <div class="card-pill pill-warn">CSP</div>
+        <div class="rate">$500 limit</div>
+      </div>
+    </div>
+    <div class="route-row">
+      <div class="route-icon">🏠</div>
+      <div class="route-body">
+        <div class="route-cat">Insurance · Large bills</div>
+        <div class="route-why">NJM auto/home/umbrella — no convenience fee</div>
+      </div>
+      <div class="route-card">
+        <div class="card-pill pill-slate">Fidelity</div>
+        <div class="rate">2% cash</div>
+      </div>
+    </div>
+    <div class="route-row">
+      <div class="route-icon">💳</div>
+      <div class="route-body">
+        <div class="route-cat">Everything else</div>
+        <div class="route-why">Default fallback</div>
+      </div>
+      <div class="route-card">
+        <div class="card-pill pill-slate">Fidelity</div>
+        <div class="rate">2% cash</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Costco -->
+<div class="section">
+  <div class="section-label">Costco</div>
+  <div class="card">
+    <div class="route-row">
+      <div class="route-icon">🏪</div>
+      <div class="route-body">
+        <div class="route-cat">Shop Cards · Costco.com</div>
+        <div class="route-why">Wholesale-club 5% quarter — Freedom Original (Visa) + Freedom Flex (MC). Both work on Costco.com. NOT the Freedom Unlimited.</div>
+      </div>
+      <div class="route-card">
+        <div class="card-pill pill-green">Freedom ×2</div>
+        <div class="rate">~7% all-in</div>
+      </div>
+    </div>
+    <div class="route-row">
+      <div class="route-icon">🏪</div>
+      <div class="route-body">
+        <div class="route-cat">Costco in-warehouse · Costco.com (merchandise)</div>
+        <div class="route-why">Same 4% all-in as Citi (both 2% card + 2% Executive) — but Fidelity pays flexible cash vs. Citi's Costco-only annual certificate. Use Fidelity.</div>
+      </div>
+      <div class="route-card">
+        <div class="card-pill pill-slate">Fidelity</div>
+        <div class="rate">4% all-in</div>
+      </div>
+    </div>
+    <div class="route-row">
+      <div class="route-icon">⛽</div>
+      <div class="route-body">
+        <div class="route-cat">Costco gas</div>
+        <div class="route-why">Citi earns 4% on gas vs. Fidelity's 2% — Executive excluded on gas</div>
+      </div>
+      <div class="route-card">
+        <div class="card-pill pill-slate">Citi Costco</div>
+        <div class="rate">4% card only</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- 5% plays -->
+<div class="section">
+  <div class="section-label">5% Rotating quarters</div>
+  <div class="card">
+    <div class="route-row">
+      <div class="route-icon">🎟️</div>
+      <div class="route-body">
+        <div class="route-cat">ShopRite gift cards · Live entertainment</div>
+        <div class="route-why">Freedom Original (Visa) + Freedom Flex (MC) when grocery or entertainment quarter is live. NOT Freedom Unlimited — it has no rotating categories.</div>
+      </div>
+      <div class="route-card">
+        <div class="card-pill pill-blue">Original + Flex</div>
+        <div class="rate">5% · $1,500 each</div>
+      </div>
+    </div>
+    <div class="route-row">
+      <div class="route-icon">🎟️</div>
+      <div class="route-body">
+        <div class="route-cat">Non-Costco 5% categories</div>
+        <div class="route-why">Restaurants, Amazon, etc. when Discover runs it</div>
+      </div>
+      <div class="route-card">
+        <div class="card-pill pill-slate">Discover IT</div>
+        <div class="rate">5% (cap $1,500)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Gaps -->
+<div class="section">
+  <div class="section-label">Gaps vs. Plan A</div>
+  <div class="gap-card">
+    <div class="gap-header">
+      <div class="gap-icon">⚠️</div>
+      <div class="gap-title">What you're missing</div>
+    </div>
+    <div class="gap-item">
+      <div class="gap-bullet">1</div>
+      <div class="gap-text">
+        <div class="gap-name">Lounges — biggest gap</div>
+        <div class="gap-desc">No Priority Pass. Only 2 United Club passes/year from Rimma's Explorer. All other lounge access gone.</div>
+      </div>
+    </div>
+    <div class="gap-item">
+      <div class="gap-bullet">2</div>
+      <div class="gap-text">
+        <div class="gap-name">Purchase protection</div>
+        <div class="gap-desc">CSP covers only $500/item. No card gives $10k+ coverage on big purchases. Hold off on major buys if possible.</div>
+      </div>
+    </div>
+    <div class="gap-item">
+      <div class="gap-bullet">3</div>
+      <div class="gap-text">
+        <div class="gap-name">Rental CDW ceiling</div>
+        <div class="gap-desc">$60k (CSP/Quest) vs. $75k (Venture X). Fine for all normal rentals — only matters on exotic cars.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CSR decision -->
+<div class="section">
+  <div class="section-label">If no Venture X by Oct 1</div>
+  <div class="decision-card">
+    <div class="decision-header">
+      <div class="gap-icon">⚖️</div>
+      <div class="decision-title">CSR decision point</div>
+    </div>
+    <div class="decision-option opt-keep">
+      <div class="opt-label">Keep CSR one more year ($795)</div>
+      <div class="opt-desc">Keeps Priority Pass + CSR protections. Retry Venture X in 2027 when more 5/24 slots age off.</div>
+    </div>
+    <div class="decision-option opt-drop">
+      <div class="opt-label">Drop CSR anyway ($0 saved)</div>
+      <div class="opt-desc">Accept 2 United Club visits/year. Only if you're genuinely okay living without Priority Pass lounges.</div>
+    </div>
+    <div class="lean-row">
+      💡 Lean: Keep CSR until Venture X lands. The lounge access is why you're doing this in the first place.
+    </div>
+  </div>
+</div>
+
+<div class="footer">
+  Plan A activates the moment Venture X Priority Pass is confirmed active.<br>
+  July 14 reminder set to apply · Sept 1 reminder to execute CSR swap.
+</div>
+
+</body>
+</html>
