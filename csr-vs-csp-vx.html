@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>CSR vs CSP + Venture X</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0E1117;
+    --surface: #161B27;
+    --surface2: #1E2535;
+    --border: rgba(255,255,255,.08);
+    --text: #F2F0EC;
+    --text-mid: #9BA8BC;
+    --text-soft: #5C6780;
+    --blue: #4A8FE8;
+    --blue-bg: rgba(74,143,232,.12);
+    --blue-border: rgba(74,143,232,.25);
+    --green: #34C97A;
+    --green-bg: rgba(52,201,122,.1);
+    --green-border: rgba(52,201,122,.25);
+    --red: #F06060;
+    --red-bg: rgba(240,96,96,.1);
+    --red-border: rgba(240,96,96,.25);
+    --amber: #F5A623;
+    --amber-bg: rgba(245,166,35,.1);
+    --amber-border: rgba(245,166,35,.25);
+    --gold: #C8922A;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    max-width: 430px;
+    margin: 0 auto;
+    padding-bottom: 48px;
+    line-height: 1.5;
+  }
+
+  /* ── Header ── */
+  .header {
+    padding: 28px 18px 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .eyebrow {
+    font-size: 10px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .title {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -.01em;
+  }
+  .title .vs {
+    color: var(--text-soft);
+    font-style: italic;
+    font-weight: 700;
+  }
+  .title .winner { color: var(--blue); }
+  .subtitle {
+    font-size: 12.5px;
+    color: var(--text-mid);
+    margin-top: 10px;
+    line-height: 1.5;
+  }
+
+  /* ── Net cost hero ── */
+  .cost-hero {
+    margin: 16px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 18px 16px;
+  }
+  .cost-label {
+    font-size: 10px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--text-soft);
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+  .cost-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .cost-card {
+    flex: 1;
+    background: var(--surface2);
+    border-radius: 10px;
+    padding: 12px 12px 10px;
+    border: 1px solid var(--border);
+  }
+  .cost-card.loser { border-color: var(--red-border); }
+  .cost-card.winner { border-color: var(--blue-border); background: var(--blue-bg); }
+  .cost-name {
+    font-size: 10.5px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .cost-card.loser .cost-name { color: var(--red); }
+  .cost-card.winner .cost-name { color: var(--blue); }
+  .cost-breakdown {
+    font-size: 11px;
+    color: var(--text-soft);
+    line-height: 1.7;
+    margin-bottom: 6px;
+  }
+  .cost-breakdown s { color: rgba(255,255,255,.2); }
+  .cost-net {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 900;
+    line-height: 1;
+  }
+  .cost-card.loser .cost-net { color: var(--red); }
+  .cost-card.winner .cost-net { color: var(--blue); }
+  .cost-net-label { font-size: 10px; color: var(--text-soft); margin-top: 3px; }
+  .saving-banner {
+    background: var(--green-bg);
+    border: 1px solid var(--green-border);
+    border-radius: 8px;
+    padding: 9px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .saving-banner-icon { font-size: 16px; }
+  .saving-banner-text {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--green);
+    line-height: 1.4;
+  }
+  .saving-banner-text span { font-weight: 400; color: var(--text-mid); }
+
+  /* ── Section ── */
+  .section { padding: 14px 14px 2px; }
+  .section-label {
+    font-size: 10px;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: var(--text-soft);
+    margin-bottom: 8px;
+    padding-left: 2px;
+  }
+  .comp-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+
+  /* ── Comparison row ── */
+  .comp-row {
+    padding: 11px 14px;
+    border-bottom: 1px solid var(--border);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px;
+    align-items: start;
+  }
+  .comp-row:last-child { border-bottom: none; }
+  .comp-category {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 4px;
+  }
+  .comp-values {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 4px;
+  }
+  .val {
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 5px;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  .val-label {
+    font-size: 9.5px;
+    font-weight: 500;
+    opacity: .7;
+    margin-right: 2px;
+  }
+  .val-csr { background: rgba(255,255,255,.06); color: var(--text-mid); border: 1px solid rgba(255,255,255,.08); }
+  .val-combo { background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue-border); }
+  .val-tie { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-border); }
+  .comp-note {
+    font-size: 11px;
+    color: var(--text-soft);
+    line-height: 1.4;
+    margin-top: 3px;
+  }
+  .winner-badge {
+    flex: 0 0 auto;
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 20px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    align-self: start;
+    margin-top: 2px;
+  }
+  .badge-combo { background: var(--blue-bg); color: var(--blue); border: 1px solid var(--blue-border); }
+  .badge-csr { background: var(--red-bg); color: var(--red); border: 1px solid var(--red-border); }
+  .badge-tie { background: var(--amber-bg); color: var(--amber); border: 1px solid var(--amber-border); }
+
+  /* ── Restaurant credit ── */
+  .rest-card {
+    background: var(--surface);
+    border: 1px solid var(--amber-border);
+    border-radius: 12px;
+    padding: 15px 15px;
+    margin-bottom: 8px;
+  }
+  .rest-header {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 13px;
+  }
+  .rest-icon { font-size: 18px; }
+  .rest-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--amber);
+    line-height: 1.2;
+  }
+  .rest-point {
+    display: flex;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(245,166,35,.1);
+  }
+  .rest-point:last-child { border-bottom: none; padding-bottom: 0; }
+  .rest-dot {
+    width: 6px; height: 6px;
+    background: var(--amber);
+    border-radius: 50%;
+    flex: 0 0 6px;
+    margin-top: 6px;
+  }
+  .rest-text {
+    font-size: 12.5px;
+    color: var(--text-mid);
+    line-height: 1.5;
+  }
+  .rest-text b { color: var(--text); font-weight: 600; }
+  .rest-text .highlight { color: var(--amber); font-weight: 600; }
+
+  /* ── Verdict ── */
+  .verdict-wrap {
+    margin: 14px 14px 0;
+    background: var(--blue-bg);
+    border: 1px solid var(--blue-border);
+    border-radius: 16px;
+    padding: 20px 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .verdict-wrap::before {
+    content: 'VERDICT';
+    position: absolute;
+    top: -8px; right: 10px;
+    font-family: 'Playfair Display', serif;
+    font-size: 72px;
+    font-weight: 900;
+    color: rgba(74,143,232,.06);
+    letter-spacing: -.04em;
+    line-height: 1;
+    pointer-events: none;
+    user-select: none;
+  }
+  .verdict-label {
+    font-size: 10px;
+    letter-spacing: .18em;
+    text-transform: uppercase;
+    color: var(--blue);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .verdict-headline {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 12px;
+    color: var(--text);
+  }
+  .verdict-headline em { color: var(--blue); font-style: normal; }
+  .verdict-point {
+    display: flex;
+    gap: 9px;
+    margin-bottom: 8px;
+    align-items: start;
+  }
+  .verdict-point:last-child { margin-bottom: 0; }
+  .verdict-check {
+    color: var(--green);
+    font-size: 13px;
+    flex: 0 0 16px;
+    margin-top: 1px;
+  }
+  .verdict-text {
+    font-size: 12.5px;
+    color: var(--text-mid);
+    line-height: 1.5;
+  }
+  .verdict-text b { color: var(--text); }
+  .verdict-caveat {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-size: 11.5px;
+    color: var(--text-soft);
+    line-height: 1.5;
+    font-style: italic;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    margin: 16px 14px 0;
+    font-size: 10.5px;
+    color: var(--text-soft);
+    line-height: 1.6;
+    text-align: center;
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="eyebrow">Card Comparison · 2026</div>
+  <div class="title">
+    CSR <span class="vs">vs</span><br>
+    <span class="winner">CSP + Venture X</span>
+  </div>
+  <div class="subtitle">Verified against Chase benefit guides BGC11387 & BGC11388 and current Capital One Venture X terms.</div>
+</div>
+
+<!-- Net cost hero -->
+<div class="cost-hero">
+  <div class="cost-label">Net annual cost after credits</div>
+  <div class="cost-row">
+    <div class="cost-card loser">
+      <div class="cost-name">CSR alone</div>
+      <div class="cost-breakdown">
+        $795 fee<br>
+        −$300 travel credit<br>
+        = $495 remaining
+      </div>
+      <div class="cost-net">~$495</div>
+      <div class="cost-net-label">per year</div>
+    </div>
+    <div class="cost-card winner">
+      <div class="cost-name">CSP + Venture X</div>
+      <div class="cost-breakdown">
+        $95 + $395 = $490<br>
+        −$100 hotel (CSP)<br>
+        −$300 travel (VX)<br>
+        −$100–185 VX miles
+      </div>
+      <div class="cost-net">~$0–90</div>
+      <div class="cost-net-label">per year</div>
+    </div>
+  </div>
+  <div class="saving-banner">
+    <div class="saving-banner-icon">💰</div>
+    <div class="saving-banner-text">
+      Save ~$400–495/year <span>— that's the whole argument in one number.</span>
+    </div>
+  </div>
+</div>
+
+<!-- Insurance -->
+<div class="section">
+  <div class="section-label">Insurance — the argument most people get wrong</div>
+  <div class="comp-card">
+
+    <div class="comp-row">
+      <div>
+        <div class="comp-category">Trip cancellation / interruption</div>
+        <div class="comp-values">
+          <span class="val val-csr"><span class="val-label">CSR</span>$10k/person · $20k/trip</span>
+          <span class="val val-tie"><span class="val-label">CSP</span>$10k/person · $20k/trip</span>
+        </div>
+        <div class="comp-note">Verified identical against both Chase benefit guides. This is not a reason to keep CSR.</div>
+      </div>
+      <span class="winner-badge badge-tie">Tie</span>
+    </div>
+
+    <div class="comp-row">
+      <div>
+        <div class="comp-category">Emergency evacuation</div>
+        <div class="comp-values">
+          <span class="val val-csr"><span class="val-label">CSR</span>$100,000</span>
+          <span class="val val-tie"><span class="val-label">CSP</span>$100,000</span>
+        </div>
+        <div class="comp-note">CSP added $100k evacuation on June 15, 2026. Ties CSR exactly.</div>
+      </div>
+      <span class="winner-badge badge-tie">Tie</span>
+    </div>
+
+    <div class="comp-row">
+      <div>
+        <div class="comp-category">Emergency medical / dental</div>
+        <div class="comp-values">
+          <span class="val val-csr"><span class="val-label">CSR</span>$2,500</span>
+          <span class="val val-combo"><span class="val-label">CSP+VX</span>None</span>
+        </div>
+        <div class="comp-note">CSR's $2,500 is token — a real ER abroad costs $10k–80k. An annual travel-medical plan gives $100k+ for ~$200/yr.</div>
+      </div>
+      <span class="winner-badge badge-csr">CSR</span>
+    </div>
+
+    <div class="comp-row">
+      <div>
+        <div class="comp-category">Rental car CDW (primary)</div>
+        <div class="comp-values">
+          <span class="val val-csr"><span class="val-label">CSR</span>$75,000</span>
+          <span class="val val-combo"><span class="val-label">VX</span>$75,000</span>
+        </div>
+        <div class="comp-note">Venture X matches CSR exactly at $75k. CSP is $60k — use Venture X for rentals.</div>
+      </div>
+      <span class="winner-badge badge-tie">Tie</span>
+    </div>
+
+    <div class="comp-row">
+      <div>
+        <div class="comp-category">Travel accident insurance</div>
+        <div class="comp-values">
+          <span class="val val-csr"><span class="val-label">CSR</span>$1,000,000</span>
+          <span class="val val-combo"><span class="val-label">VX</span>$1,000,000</span>
+        </div>
+        <div class="comp-note">Venture X matches CSR. CSP is $500k — book flights on Venture X.</div>
+      </div>
+      <span class="winner-badge badge-tie">Tie</span>
+    </div>
+
+    <div class="comp-row">
+      <div>
+        <div class="comp-category">Purchase protection</div>
+        <div class="comp-values">
+          <span class="val val-csr"><span class="val-label">CSR</span>$10,000/item</span>
+          <span class="val val-combo"><span class="val-label">VX</span>~$10,000/item</span>
+        </div>
+        <div class="comp-note">Venture X matches CSR. CSP is only $500/item — put big purchases on Venture X.</div>
+      </div>
+      <span class="winner-badge badge-tie">Tie</span>
+    </div>
+
+    <div class="comp-row">
+      <div>
+        <div class="comp-category">Trip delay trigger</div>
+        <div class="comp-values">
+          <span class="val val-csr"><span class="val-label">CSR</span>6 hours</span>
+          <span class="val val-combo"><span class="val-label">VX</span>6 hours</span>
+          <span class="val val-tie"><span class="val-label">CSP</span>12 hours</span>
+        </div>
+        <div class="comp-note">Put flights on Venture X for the faster 6-hr trigger. CSP is slower.</div>
+      </div>
+      <span class="winner-badge badge-tie">Tie</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- Restaurant credit -->
+<div class="section">
+  <div class="section-label">The restaurant credit — read carefully</div>
+  <div class="rest-card">
+    <div class="rest-header">
+      <div class="rest-icon">🍽️</div>
+      <div class="rest-title">CSR's $300 dining credit isn't what it sounds like</div>
+    </div>
+    <div class="rest-point">
+      <div class="rest-dot"></div>
+      <div class="rest-text"><b>It's not $300 at any restaurant.</b> It's only valid at <span class="highlight">Exclusive Tables by Chase</span> — a curated list of specific partner restaurants chosen by Chase. If your go-to spots aren't on the list, the credit is worth $0 to you.</div>
+    </div>
+    <div class="rest-point">
+      <div class="rest-dot"></div>
+      <div class="rest-text"><b>It's split biannually:</b> $150 per 6-month period. Miss a window and you lose that $150 — it doesn't roll over. This is the definition of use-it-or-lose-it.</div>
+    </div>
+    <div class="rest-point">
+      <div class="rest-dot"></div>
+      <div class="rest-text"><b>It requires active management.</b> You have to remember to book through the Exclusive Tables portal, at the right restaurants, within each 6-month window. That's the coupon-book problem with CSR's new credit structure.</div>
+    </div>
+    <div class="rest-point">
+      <div class="rest-dot"></div>
+      <div class="rest-text"><b>CSP is actually better for dining in practice.</b> The CSP earns <span class="highlight">3x on all dining everywhere</span> — any restaurant, no portals, no partner lists. On $9,000/year of dining (a real number), that's ~27,000 points vs. a restricted $300 that requires you to change where you eat.</div>
+    </div>
+    <div class="rest-point">
+      <div class="rest-dot"></div>
+      <div class="rest-text"><b>Honest bottom line:</b> count the restaurant credit only if you already eat at those specific restaurants regularly. Otherwise it's $0, not $300 — and it doesn't belong in the cost comparison at all.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Earn rates -->
+<div class="section">
+  <div class="section-label">Earning rates</div>
+  <div class="comp-card">
+
+    <div class="comp-row">
+      <div>
+        <div class="comp-category">Dining</div>
+        <div class="comp-values">
+          <span class="val val-csr"><span class="val-label">CSR</span>3x — any restaurant</span>
+          <span class="val val-tie"><span class="val-label">CSP</span>3x — any restaurant</span>
+        </div>
+        <div class="comp-note">Identical. CSP wins in practice because it adds 3x on Airbnb and gas too.</div>
+      </div>
+      <span class="winner-badge badge-tie">Tie</span>
+    </div>
+
+    <div class="comp-row">
+      <div>
+        <div class="comp-category">Airbnb · Vacation rentals · Gas</div>
+        <div class="comp-values">
+          <span class="val val-csr"><span class="val-label">CSR</span>1x</span>
+          <span class="val val-combo"><span class="val-label">CSP</span>3x (June 2026)</span>
+        </div>
+        <div class="comp-note">New CSP category — CSR earns nothing here. A significant gap on a $3,000 Airbnb trip.</div>
+      </div>
+      <span class="winner-badge badge-combo">CSP+VX</span>
+    </div>
+
+    <div class="comp-row">
+      <div>
+        <div class="comp-category">Chase Travel portal</div>
+        <div class="comp-values">
+          <span class="val val-csr"><span class="val-label">CSR</span>8x</span>
+          <span class="val val-combo"><span class="val-label">CSP</span>5x</span>
+        </div>
+        <div class="comp-note">CSR's strongest edge — but only if you book heavily through the Chase portal. On $5k of portal bookings the delta is ~$225. Doesn't close the $400/yr fee gap.</div>
+      </div>
+      <span class="winner-badge badge-csr">CSR</span>
+    </div>
+
+    <div class="comp-row">
+      <div>
+        <div class="comp-category">Direct flights · Hotels</div>
+        <div class="comp-values">
+          <span class="val val-csr"><span class="val-label">CSR</span>4x</span>
+          <span class="val val-combo"><span class="val-label">CSP+VX</span>2x each</span>
+        </div>
+        <div class="comp-note">CSR earns more on direct bookings. Real edge for heavy direct bookers.</div>
+      </div>
+      <span class="winner-badge badge-csr">CSR</span>
+    </div>
+
+    <div class="comp-row">
+      <div>
+        <div class="comp-category">Everything else</div>
+        <div class="comp-values">
+          <span class="val val-csr"><span class="val-label">CSR</span>1x</span>
+          <span class="val val-combo"><span class="val-label">VX</span>2x</span>
+        </div>
+        <div class="comp-note">Venture X doubles CSR's earn rate on all non-bonus spend. On $50k of everyday spending that's ~50,000 extra miles/year.</div>
+      </div>
+      <span class="winner-badge badge-combo">CSP+VX</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- Lounges -->
+<div class="section">
+  <div class="section-label">Lounge access</div>
+  <div class="comp-card">
+
+    <div class="comp-row">
+      <div>
+        <div class="comp-category">Priority Pass network</div>
+        <div class="comp-values">
+          <span class="val val-csr"><span class="val-label">CSR</span>✓ Included</span>
+          <span class="val val-tie"><span class="val-label">VX</span>✓ Included</span>
+        </div>
+        <div class="comp-note">Same worldwide Priority Pass network on both.</div>
+      </div>
+      <span class="winner-badge badge-tie">Tie</span>
+    </div>
+
+    <div class="comp-row">
+      <div>
+        <div class="comp-category">Proprietary lounges</div>
+        <div class="comp-values">
+          <span class="val val-csr"><span class="val-label">CSR</span>Sapphire Lounges</span>
+          <span class="val val-combo"><span class="val-label">VX</span>Capital One Lounges</span>
+        </div>
+        <div class="comp-note">Both are growing networks. Cap One Lounges are newer but highly rated and expanding faster.</div>
+      </div>
+      <span class="winner-badge badge-tie">Tie</span>
+    </div>
+
+    <div class="comp-row">
+      <div>
+        <div class="comp-category">Guest / companion access</div>
+        <div class="comp-values">
+          <span class="val val-csr"><span class="val-label">CSR</span>Included</span>
+          <span class="val val-combo"><span class="val-label">VX</span>$125/yr AU or $35/visit</span>
+        </div>
+        <div class="comp-note">Venture X changed this Feb 1, 2026. If traveling together often, $125/yr AU is the cleaner option.</div>
+      </div>
+      <span class="winner-badge badge-csr">CSR</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- Points -->
+<div class="section">
+  <div class="section-label">Points ecosystems</div>
+  <div class="comp-card">
+
+    <div class="comp-row">
+      <div>
+        <div class="comp-category">Transfer partners</div>
+        <div class="comp-values">
+          <span class="val val-csr"><span class="val-label">CSR</span>Chase UR (Hyatt, United…)</span>
+          <span class="val val-combo"><span class="val-label">CSP+VX</span>Chase UR + Capital One</span>
+        </div>
+        <div class="comp-note">CSP has identical Chase UR partners to CSR. Venture X adds 20+ Cap One partners (Air Canada, Turkish, Flying Blue, Singapore…). CSP+VX has MORE flexibility, not less.</div>
+      </div>
+      <span class="winner-badge badge-combo">CSP+VX</span>
+    </div>
+
+    <div class="comp-row">
+      <div>
+        <div class="comp-category">Hyatt transfer ratio</div>
+        <div class="comp-values">
+          <span class="val val-csr"><span class="val-label">CSR</span>1:1 (kept)</span>
+          <span class="val val-combo"><span class="val-label">CSP</span>4:3 (cut June 2026)</span>
+        </div>
+        <div class="comp-note">If Hyatt is your primary partner, transfer points before downgrading CSR while 1:1 is still available.</div>
+      </div>
+      <span class="winner-badge badge-csr">CSR</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- Verdict -->
+<div class="verdict-wrap">
+  <div class="verdict-label">The verdict</div>
+  <div class="verdict-headline">
+    <em>CSP + Venture X wins</em> —<br>for most people, by a lot.
+  </div>
+  <div class="verdict-point">
+    <div class="verdict-check">✓</div>
+    <div class="verdict-text"><b>Trip cancellation is identical</b> — $10k/$20k on both. Not a reason to keep CSR.</div>
+  </div>
+  <div class="verdict-point">
+    <div class="verdict-check">✓</div>
+    <div class="verdict-text"><b>Evacuation, CDW, accident, and purchase protection all match</b> via Venture X. CSR has no edge on these anymore.</div>
+  </div>
+  <div class="verdict-point">
+    <div class="verdict-check">✓</div>
+    <div class="verdict-text"><b>The restaurant credit is misleading</b> — it's restricted to Exclusive Tables partner restaurants, split biannually, and worth $0 if you don't change your dining habits.</div>
+  </div>
+  <div class="verdict-point">
+    <div class="verdict-check">✓</div>
+    <div class="verdict-text"><b>The $400/yr savings</b> covers an annual travel-medical plan (~$200), an extra Venture X AU pass ($125), and more — with money left over.</div>
+  </div>
+  <div class="verdict-caveat">
+    CSR is the right call only if: you book most travel through the Chase portal at 8x, you specifically value Sapphire Lounges, and you use the Exclusive Tables dining credit regularly. If that's not your profile — the math doesn't close.
+  </div>
+</div>
+
+<div class="footer">
+  Benefit data verified against Chase benefit guides BGC11387 (CSP) and BGC11388 (CSR), effective 10/01/24, with June 15, 2026 CSP updates from Chase.com. Venture X terms from Capital One current published benefits.
+</div>
+
+</body>
+</html>
