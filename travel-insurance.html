@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Travel Insurance — Family Coverage</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0E1117;
+    --surface: #161B27;
+    --surface2: #1E2535;
+    --border: rgba(255,255,255,.08);
+    --text: #F2F0EC;
+    --text-mid: #9BA8BC;
+    --text-soft: #5C6780;
+    --green: #34C97A;
+    --green-bg: rgba(52,201,122,.1);
+    --green-border: rgba(52,201,122,.25);
+    --red: #F06060;
+    --red-bg: rgba(240,96,96,.1);
+    --red-border: rgba(240,96,96,.25);
+    --amber: #E8A040;
+    --amber-bg: rgba(232,160,64,.1);
+    --amber-border: rgba(232,160,64,.25);
+    --blue: #4A8FE8;
+    --blue-bg: rgba(74,143,232,.12);
+    --blue-border: rgba(74,143,232,.25);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    -webkit-font-smoothing: antialiased;
+    max-width: 460px;
+    margin: 0 auto;
+    padding-bottom: 48px;
+    line-height: 1.5;
+  }
+  .back-link {
+    display: block;
+    padding: 16px 14px 0;
+    font-size: 12.5px;
+    color: var(--text-soft);
+    text-decoration: none;
+  }
+  .header { padding: 12px 18px 22px; border-bottom: 1px solid var(--border); }
+  .eyebrow { font-size: 10px; letter-spacing: .18em; text-transform: uppercase; color: var(--amber); font-weight: 600; margin-bottom: 10px; }
+  .title { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 900; line-height: 1.1; }
+  .subtitle { font-size: 12.5px; color: var(--text-mid); margin-top: 10px; line-height: 1.5; }
+
+  .section { padding: 16px 14px 2px; }
+  .section-label { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; font-weight: 700; color: var(--text-soft); margin-bottom: 8px; padding-left: 2px; }
+
+  .matrix-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; margin-bottom: 8px; }
+  .matrix-row { padding: 12px 14px; border-bottom: 1px solid var(--border); }
+  .matrix-row:last-child { border-bottom: none; }
+  .matrix-name { font-size: 13.5px; font-weight: 700; margin-bottom: 8px; }
+  .matrix-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .matrix-cell { padding: 8px 10px; border-radius: 8px; font-size: 11.5px; }
+  .cell-label { font-size: 9.5px; text-transform: uppercase; letter-spacing: .06em; opacity: .7; margin-bottom: 3px; font-weight: 600; }
+  .cell-ok { background: var(--green-bg); border: 1px solid var(--green-border); color: var(--green); }
+  .cell-bad { background: var(--red-bg); border: 1px solid var(--red-border); color: var(--red); }
+  .cell-partial { background: var(--amber-bg); border: 1px solid var(--amber-border); color: var(--amber); }
+
+  .gap-card { background: var(--red-bg); border: 1px solid var(--red-border); border-radius: 12px; padding: 14px; margin-bottom: 8px; }
+  .gap-title { font-size: 12.5px; font-weight: 700; color: var(--red); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .gap-text { font-size: 12.5px; color: var(--text-mid); line-height: 1.55; }
+  .gap-text b { color: var(--text); }
+
+  .fix-card { background: var(--green-bg); border: 1px solid var(--green-border); border-radius: 12px; padding: 14px; margin-bottom: 8px; }
+  .fix-title { font-size: 12.5px; font-weight: 700; color: var(--green); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+  .fix-text { font-size: 12.5px; color: var(--text-mid); line-height: 1.55; }
+  .fix-text b { color: var(--text); }
+
+  .checklist-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 4px; margin-bottom: 8px; }
+  .check-item { display: flex; gap: 10px; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+  .check-item:last-child { border-bottom: none; }
+  .check-box { width: 16px; height: 16px; border-radius: 4px; border: 1.5px solid var(--text-soft); flex: 0 0 16px; margin-top: 1px; }
+  .check-box.done { background: var(--green); border-color: var(--green); }
+  .check-text { font-size: 12.5px; color: var(--text-mid); line-height: 1.5; }
+  .check-text b { color: var(--text); }
+
+  .criteria-card { background: var(--surface); border: 1px solid var(--blue-border); border-radius: 12px; padding: 14px; margin-bottom: 8px; }
+  .criteria-title { font-size: 12.5px; font-weight: 700; color: var(--blue); margin-bottom: 8px; }
+  .criteria-item { font-size: 12px; color: var(--text-mid); line-height: 1.6; margin-bottom: 4px; }
+  .criteria-item b { color: var(--text); }
+
+  .footer { margin: 18px 14px 0; font-size: 10.5px; color: var(--text-soft); line-height: 1.6; text-align: center; }
+</style>
+</head>
+<body>
+
+<a class="back-link" href="plan-b-routing.html">← Back to card routing</a>
+
+<div class="header">
+  <div class="eyebrow">Insurance · Family Coverage Gaps</div>
+  <div class="title">Who's Covered,<br>Who Isn't</div>
+  <div class="subtitle">Verified against the actual Jump/GeoBlue Certificate of Coverage and Chase CSP benefit terms — not marketing summaries. Last confirmed Sept 2026.</div>
+</div>
+
+<!-- Coverage matrix -->
+<div class="section">
+  <div class="section-label">Coverage matrix</div>
+
+  <div class="matrix-card">
+    <div class="matrix-row">
+      <div class="matrix-name">Vitaliy — any trip, solo or with anyone</div>
+      <div class="matrix-grid">
+        <div class="matrix-cell cell-ok"><div class="cell-label">Medical</div>GeoBlue $250k, $0 deductible</div>
+        <div class="matrix-cell cell-ok"><div class="cell-label">Evacuation</div>GeoBlue $250k</div>
+      </div>
+    </div>
+    <div class="matrix-row">
+      <div class="matrix-name">Rimma — traveling WITH Vitaliy</div>
+      <div class="matrix-grid">
+        <div class="matrix-cell cell-ok"><div class="cell-label">Medical</div>GeoBlue $250k, $0 deductible</div>
+        <div class="matrix-cell cell-ok"><div class="cell-label">Evacuation</div>GeoBlue $250k</div>
+      </div>
+    </div>
+    <div class="matrix-row">
+      <div class="matrix-name">Rimma — solo, or with Luda only (~2x/yr)</div>
+      <div class="matrix-grid">
+        <div class="matrix-cell cell-bad"><div class="cell-label">Medical</div>Nothing</div>
+        <div class="matrix-cell cell-partial"><div class="cell-label">Evacuation</div>$100k IF charged to Vitaliy's CSP</div>
+      </div>
+    </div>
+    <div class="matrix-row">
+      <div class="matrix-name">Aden / Eliot — solo (without Vitaliy)</div>
+      <div class="matrix-grid">
+        <div class="matrix-cell cell-bad"><div class="cell-label">Medical</div>Nothing</div>
+        <div class="matrix-cell cell-partial"><div class="cell-label">Evacuation</div>$100k IF charged to Vitaliy's CSP</div>
+      </div>
+    </div>
+    <div class="matrix-row">
+      <div class="matrix-name">Luda — any international trip</div>
+      <div class="matrix-grid">
+        <div class="matrix-cell cell-ok"><div class="cell-label">Medical</div>IMG GlobeHopper $250k — bought</div>
+        <div class="matrix-cell cell-ok"><div class="cell-label">Evacuation</div>IMG GlobeHopper $250k — bought</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- The gap explained -->
+<div class="section">
+  <div class="section-label">Why the gap exists</div>
+  <div class="gap-card">
+    <div class="gap-title">⚠️ Confirmed from the actual Certificate of Coverage</div>
+    <div class="gap-text">
+      GeoBlue's own legal text: <b>"Eligible Dependents must be traveling with the Eligible Participant."</b> Vitaliy is the Eligible Participant — so he's always covered. Rimma, Aden, and Eliot all qualify as dependents, but <b>only when physically traveling with Vitaliy on the same trip.</b> This isn't a marketing simplification — it's the binding plan language, checked against the real Jump Operations LLC Certificate (4EL-6021-26).
+      <br><br>
+      Jump's domestic PPO/HDHP plan was also checked directly — it has <b>zero international provisions</b> (strictly In-Network / Out-of-Network within the US). GeoBlue is the only international mechanism Jump provides, so there's no fallback through the domestic plan either.
+    </div>
+  </div>
+  <div class="gap-card">
+    <div class="gap-title">⚠️ The CSP evacuation fallback is conditional, not automatic</div>
+    <div class="gap-text">
+      Vitaliy's CSP gives $100k evacuation to Rimma and Luda even without Vitaliy present — <b>but only if the trip is charged to his CSP</b> specifically. If a solo trip is booked on Rimma's Venture X instead, that coverage is $0 — Venture X has no evacuation benefit at all. This is easy to get wrong by default and shouldn't be relied on as the primary safety net.
+    </div>
+  </div>
+</div>
+
+<!-- The fix -->
+<div class="section">
+  <div class="section-label">The fix</div>
+  <div class="fix-card">
+    <div class="fix-title">✅ Standalone annual multi-trip medical policies</div>
+    <div class="fix-text">
+      Same model already proven with Luda's <b>IMG GlobeHopper Senior Multi-Trip</b> (~$264/yr, $250k medical, $250k evacuation, $0 deductible). For Rimma, Aden, and Eliot — none qualify for the Senior tier (65+ with Medicare), so use a <b>standard adult multi-trip plan</b> instead, e.g. IMG Patriot Multi-Trip or equivalent. Removes all dependency on remembering which card a trip was charged to.
+    </div>
+  </div>
+</div>
+
+<!-- Action checklist -->
+<div class="section">
+  <div class="section-label">Action checklist</div>
+  <div class="checklist-card">
+    <div class="check-item">
+      <div class="check-box done"></div>
+      <div class="check-text"><b>Luda</b> — IMG GlobeHopper Senior Multi-Trip purchased and active</div>
+    </div>
+    <div class="check-item">
+      <div class="check-box"></div>
+      <div class="check-text"><b>Rimma</b> — buy standalone annual multi-trip policy for her ~2x/yr solo trips</div>
+    </div>
+    <div class="check-item">
+      <div class="check-box"></div>
+      <div class="check-text"><b>Aden</b> — buy standalone policy; highest priority, lives independently in London and travels solo regularly</div>
+    </div>
+    <div class="check-item">
+      <div class="check-box"></div>
+      <div class="check-text"><b>Eliot</b> — buy standalone policy sized to his actual solo travel frequency</div>
+    </div>
+    <div class="check-item">
+      <div class="check-box"></div>
+      <div class="check-text">Check whether a <b>family/multi-person plan</b> is cheaper than three separate individual policies before buying</div>
+    </div>
+  </div>
+</div>
+
+<!-- What to look for -->
+<div class="section">
+  <div class="section-label">What to look for in a policy</div>
+  <div class="criteria-card">
+    <div class="criteria-title">Checklist for any standalone policy</div>
+    <div class="criteria-item"><b>Medical treatment:</b> $100k–250k minimum — this is the piece nothing else covers</div>
+    <div class="criteria-item"><b>Evacuation:</b> $100k+ built in, so it doesn't depend on which card a trip was charged to</div>
+    <div class="criteria-item"><b>Annual multi-trip vs. single-trip:</b> annual is cheaper once someone travels solo 2+ times/year</div>
+    <div class="criteria-item"><b>Deductible:</b> $0 preferred — Luda's plan set this precedent</div>
+    <div class="criteria-item"><b>Eligibility:</b> confirm no age/Medicare-style gating (only relevant for GlobeHopper's Senior tier)</div>
+    <div class="criteria-item"><b>Repatriation of remains:</b> usually bundled with evacuation — check it's included</div>
+  </div>
+</div>
+
+<div class="footer">
+  Linked from the main card routing guide. Update this page whenever coverage status changes for any family member.
+</div>
+
+</body>
+</html>
